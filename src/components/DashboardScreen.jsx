@@ -48,7 +48,7 @@ const DashboardScreen = ({ navigation }) => {
     return(
         <SafeAreaView style={backgroundStyle}>
             <Statusbar />
-            <Header />
+            <Header navigation={navigation} />
 
 			{userData?.all_capabilities && userData?.all_capabilities.includes('hwi') &&
 				<View style={styles.widget}>
