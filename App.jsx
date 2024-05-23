@@ -15,6 +15,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import DashboardScreen from './src/components/DashboardScreen';
 import HwiScreen from './src/components/HwiScreen';
+import OwiScreen from './src/components/OwiScreen';
 import SettingsScreen from './src/components/SettingsScreen';
 
 const Stack = createNativeStackNavigator();
@@ -78,8 +79,9 @@ const App = () => {
           { authContext?.authState?.authenticated !== false ? (
             <>
               <Stack.Screen options={{headerShown: false}} name="Dashboard" component={DashboardScreen} />
-              <Stack.Screen name="Hwi" options={{ title: 'Human Well-being Index', headerBackTitle: 'Tillbaka', headerBackTitleStyle: { fontSize: 15 }, }} component={HwiScreen} />
-              <Stack.Screen name="Settings" options={{ title: 'Inställningar', headerBackTitle: 'Tillbaka', headerBackTitleStyle: { fontSize: 15 }, }} component={SettingsScreen} />
+              <Stack.Screen name="Hwi" options={{ title: '', headerBackTitle: 'Tillbaka', headerBackTitleStyle: { fontSize: 15 }, }} component={HwiScreen} />
+              <Stack.Screen name="Owi" options={{ title: '', headerBackTitle: 'Tillbaka', headerBackTitleStyle: { fontSize: 15 }, }} component={OwiScreen} />
+              <Stack.Screen name="Settings" options={{ title: 'Profil', headerBackTitle: 'Tillbaka', headerBackTitleStyle: { fontSize: 15 }, }} component={SettingsScreen} />
             </>
           ) : (
             <>

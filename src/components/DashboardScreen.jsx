@@ -64,7 +64,7 @@ const DashboardScreen = ({ navigation }) => {
 				<View style={styles.widget}>
 					<Text style={styles.widgetTitle}>Organisation Well function Index</Text>
 					<Text style={styles.widgetText}>Detta test ger dig och er svar på hur välfungerande du och ni tycker att organisationen är.</Text>
-					<Pressable style={globalStyles.btnPrimary} onPress={ () => navigation.navigate('Hwi') }>
+					<Pressable style={globalStyles.btnPrimary} onPress={ () => navigation.navigate('Owi') }>
 						<Text style={{color: '#ffffff'}}>Gör testet här</Text>
 					</Pressable>
 				</View>
