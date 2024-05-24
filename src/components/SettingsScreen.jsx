@@ -1,5 +1,5 @@
 import React, {useContext} from 'react';
-import {View, Text, StyleSheet, SafeAreaView, useColorScheme, Image, KeyboardAvoidingView, Pressable  } from 'react-native';
+import {View, Text, StyleSheet, SafeAreaView, useColorScheme, Image, Pressable  } from 'react-native';
 import { useSelector } from 'react-redux';
 import Spinner from './Spinner';
 import {Colors} from 'react-native/Libraries/NewAppScreen';

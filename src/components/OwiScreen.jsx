@@ -1,11 +1,16 @@
-import React from 'react';
-import {View, Text, useColorScheme, SafeAreaView, ImageBackground, StyleSheet, ScrollView, Pressable } from 'react-native';
+import React, {useState} from 'react';
+import {View, Text, useColorScheme, SafeAreaView, ImageBackground, StyleSheet, ScrollView, Pressable, Image } from 'react-native';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import globalStyles from '../globalStyles';
+import owiQuestions from '../utils/owi-questions';
+import HwiTest from '../partials/HwiTest';
 
 const coverImage = {uri: 'https://sustainchange.se/app-images/hwi-cover.jpg'};
+const backIcon = {uri: 'https://sustainchange.se/app-images/back-arrow.png'};
 
 const OwiScreen = () => {
+
+    const [showTest, setShowTest] = useState(false);
 
     const isDarkMode = useColorScheme() === 'dark';
 
@@ -13,10 +18,6 @@ const OwiScreen = () => {
 		backgroundColor: isDarkMode ? Colors.darker : '#f3f2f2',
 		flex: 1,
 	};
-
-    const handleShowTest = () => {
-        console.log('test');
-    }
 
     return(
         <SafeAreaView style={backgroundStyle}>
@@ -31,28 +32,49 @@ const OwiScreen = () => {
 
                 <View style={styles.textWrap}>
 
-                    <Text style={styles.contentTitle}>Med Organisation Well function Index kan du se hur välfungerande du tycker att organisationen är i relation till dig och ditt arbete.</Text>
-                    <Text>
-                        Som arbetsgrupp får ni ett teamresultat att diskutera och utvecklas utifrån. Därefter kan du och ni följa er utveckling över tid - mot en alltmer välfungerande organisation.
-                    </Text>
-                    
-                    <Pressable style={[globalStyles.btnPrimary, {marginVertical: 15, backgroundColor: '#08303c'}]} onPress={ handleShowTest }>
-                        <Text style={{color: '#ffffff'}}>Starta testet</Text>
-                    </Pressable>
+                { showTest === true ? (
 
-                    <Text>Med tolv frågor som tar cirka fem minuter att besvara får du en indikation på hur välfungerande du tycker att organisationen är i relation till dig och ditt arbete. Frågorna är framtagna utifrån vad forskning och praktiska erfarenheter påvisat är viktiga kriterier för en välfungerande organisation. Dessa är:</Text>
+                    <>
+                        <View style={styles.backLink}>
+                            <View style={styles.backIconInner}>
+                                <Image source={backIcon} style={styles.backIcon}></Image>
+                                <Pressable onPress={ () => setShowTest(false) } >
+                                    <Text style={styles.backText}>Gå tillbaka</Text>
+                                </Pressable>
+                                
+                            </View>
+                        </View>
+                        <HwiTest questions={owiQuestions} />
+                    </>
 
-                    <View style={styles.listItemsContainer}>
-                        <Text style={styles.listItem}>{'\u2022'} att medarbetaren har god överblick, ser sin och den egna arbetsgruppens roll i hela arbetsprocessen</Text>
-                        <Text style={styles.listItem}>{'\u2022'} att medarbetaren själv har kontroll över sina arbetsuppgifter och full empowerment, det vill säga har kompetens att utföra sina uppgifter samt de resurser och det mandat som krävs</Text>
-                        <Text style={styles.listItem}>{'\u2022'} att relationerna på arbetsplatsen är goda och trygga</Text>
-                    </View>
+                    ) : (
+                    <>
+                        <Text style={styles.contentTitle}>Med Organisation Well function Index kan du se hur välfungerande du tycker att organisationen är i relation till dig och ditt arbete.</Text>
+                        <Text>
+                            Som arbetsgrupp får ni ett teamresultat att diskutera och utvecklas utifrån. Därefter kan du och ni följa er utveckling över tid - mot en alltmer välfungerande organisation.
+                        </Text>
+                        
+                        <Pressable style={[globalStyles.btnPrimary, {marginVertical: 15, backgroundColor: '#08303c'}]} onPress={ () => setShowTest( true ) }>
+                            <Text style={{color: '#ffffff'}}>Starta testet</Text>
+                        </Pressable>
+
+                        <Text>Med tolv frågor som tar cirka fem minuter att besvara får du en indikation på hur välfungerande du tycker att organisationen är i relation till dig och ditt arbete. Frågorna är framtagna utifrån vad forskning och praktiska erfarenheter påvisat är viktiga kriterier för en välfungerande organisation. Dessa är:</Text>
+
+                        <View style={styles.listItemsContainer}>
+                            <Text style={styles.listItem}>{'\u2022'} att medarbetaren har god överblick, ser sin och den egna arbetsgruppens roll i hela arbetsprocessen</Text>
+                            <Text style={styles.listItem}>{'\u2022'} att medarbetaren själv har kontroll över sina arbetsuppgifter och full empowerment, det vill säga har kompetens att utföra sina uppgifter samt de resurser och det mandat som krävs</Text>
+                            <Text style={styles.listItem}>{'\u2022'} att relationerna på arbetsplatsen är goda och trygga</Text>
+                        </View>
+                        
+                        <Text style={{marginVertical: 15}}>Indexet kan vara mellan 12-72 där indexet indikerar hur organisationen fungerar i relation till dig och dina arbetsuppgifter. Teamets resultatet ger en indikation på hur ni som grupp upplever organisationen.</Text>
+                        <Text style={styles.inlineText}><Text style={[styles.textSpan, {backgroundColor: '#b23722'}]}> Rött (12-24) </Text> : Det kan handla om något tillfälligt, t ex en kris. Om det inte är en tillfällig situation är rött en allvarlig indikation på att organisationen inte är välfungerande ur ditt perspektiv eller om teamresultatet är rött ur hela gruppens perspektiv.</Text>
+                        <Text style={styles.inlineText}><Text style={[styles.textSpan, {backgroundColor: '#e9b90f'}]}> Gult (25-59) </Text> : Här är det intressant att se vad det är som skaver i organisationen, finns det oklarheter som behöver redas ut och hur kan era relationer utvecklas?</Text>
+                        <Text style={styles.inlineText}><Text style={[styles.textSpan, {backgroundColor: '#586230'}]}> Grönt (60–72) </Text> : Du arbetar på arbetsplats om som passar dig mycket väl och har gruppen ett högt index tycker det på att du, och ni, arbetar i en välfungerande organisation.</Text>
+                        <Text>Du kan känna dig trygg med att göra testet för dina svar behandlas helt konfidentiellt!</Text>
+                        </>
+                    )}
+
                     
-                    <Text style={{marginVertical: 15}}>Indexet kan vara mellan 12-72 där indexet indikerar hur organisationen fungerar i relation till dig och dina arbetsuppgifter. Teamets resultatet ger en indikation på hur ni som grupp upplever organisationen.</Text>
-                    <Text style={styles.inlineText}><Text style={[styles.textSpan, {backgroundColor: '#b23722'}]}> Rött (12-24) </Text> : Det kan handla om något tillfälligt, t ex en kris. Om det inte är en tillfällig situation är rött en allvarlig indikation på att organisationen inte är välfungerande ur ditt perspektiv eller om teamresultatet är rött ur hela gruppens perspektiv.</Text>
-                    <Text style={styles.inlineText}><Text style={[styles.textSpan, {backgroundColor: '#e9b90f'}]}> Gult (25-59) </Text> : Här är det intressant att se vad det är som skaver i organisationen, finns det oklarheter som behöver redas ut och hur kan era relationer utvecklas?</Text>
-                    <Text style={styles.inlineText}><Text style={[styles.textSpan, {backgroundColor: '#586230'}]}> Grönt (60–72) </Text> : Du arbetar på arbetsplats om som passar dig mycket väl och har gruppen ett högt index tycker det på att du, och ni, arbetar i en välfungerande organisation.</Text>
-                    <Text>Du kan känna dig trygg med att göra testet för dina svar behandlas helt konfidentiellt!</Text>
                 </View>
             </ScrollView>
         </SafeAreaView>
@@ -104,7 +126,23 @@ const styles = StyleSheet.create({
     },
     listItem: {
         marginBottom: 10
-    }
+    },
+    backLink: {
+		marginVertical: 15
+	},
+	backIcon: {
+		width: 15,
+		height: 9,
+		marginRight: 3
+	},
+	backIconInner: {
+		flexDirection: 'row',
+		alignItems: 'center'
+	},
+	backText: {
+		fontSize: 12,
+		textDecorationLine: 'underline'
+	}
 });
 
 export default OwiScreen;
