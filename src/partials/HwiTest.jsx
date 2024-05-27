@@ -1,8 +1,13 @@
-import React, {useState} from 'react';
-import {View, Text, StyleSheet, Pressable } from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {View, Text, StyleSheet, Pressable, ActivityIndicator } from 'react-native';
 import {Slider} from '@miblanchard/react-native-slider';
+import globalStyles from '../globalStyles';
+import { useDispatch } from 'react-redux';
+import {saveUserHwi, saveUserOvi } from '../redux/userSlice';
+import * as Keychain from 'react-native-keychain';
+import HwiResults from './HwiResults';
 
-const HwiTest = ({questions}) => {
+const HwiTest = ({questions, type, showResults}) => {
 
 	let intialValues = [];
 	
@@ -13,6 +18,17 @@ const HwiTest = ({questions}) => {
 	}
 
 	const [sliderValues, setSliderValues] = useState(intialValues);
+	const dispatch = useDispatch();
+	const [isSaving, setIsSaving] = useState(false);
+	const [showResult, setShowResult] = useState(false);
+
+	useEffect( () => {
+        
+        if ( showResults === true ) {
+			setShowResult(true);
+		}
+
+    }, [showResults])
 
 	const handleHviUpdate = (val, updatedIndex) => {
 
@@ -24,6 +40,43 @@ const HwiTest = ({questions}) => {
 
 		setSliderValues( newHvi );
 
+	}
+
+	const handleSaveHwi = async () => {
+
+		setIsSaving(true);
+
+		try {
+			const token = await Keychain.getGenericPassword();
+			const jwt = JSON.parse(token.password);
+
+			const requestData = {
+				token: jwt.accessToken,
+				hwi: sliderValues
+			}
+
+			if ( type === 'hvi' ) {
+				dispatch(saveUserHwi( requestData ))
+			}
+
+			if ( type === 'ovi' ) {
+				dispatch(saveUserOvi( requestData ))
+			}
+
+			setShowResult( true );
+	
+		} catch (error) {
+		  console.log(`Hwi save error: ${error.message}`);
+		}
+
+		setIsSaving( false );
+
+	}
+
+	if ( showResult ) {
+		return (
+			<HwiResults type={type} />
+		)
 	}
 	
     return (
@@ -68,6 +121,19 @@ const HwiTest = ({questions}) => {
 					</View>
 				)
 			}) }
+
+			<View>
+
+				<Pressable style={[globalStyles.btnSecondary, {marginTop: 20}]} onPress={ () => handleSaveHwi() }>
+					{ isSaving === true ? (
+						<ActivityIndicator size="small" color="#ffffff" />
+					) : (
+						<Text style={{color: '#ffffff'}}>Spara</Text>
+					)}
+					
+				</Pressable>
+
+			</View>
 			
 		</>
     );

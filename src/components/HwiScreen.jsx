@@ -11,6 +11,7 @@ const backIcon = {uri: 'https://sustainchange.se/app-images/back-arrow.png'};
 const HwiScreen = () => {
 
     const [showTest, setShowTest] = useState(false);
+    const [showResults, setShowResults] = useState(false);
 
     const isDarkMode = useColorScheme() === 'dark';
 
@@ -44,7 +45,7 @@ const HwiScreen = () => {
 									
 								</View>
 							</View>
-                        	<HwiTest questions={hwiQuestions} />
+                        	<HwiTest questions={hwiQuestions} type="hvi" showResults={showResults} />
                        </>
 
                     ) : (
@@ -53,8 +54,11 @@ const HwiScreen = () => {
                             <Text>På tolv frågor och cirka fem minuter kan du få en indikation på hur hållbar din vardag är. Frågorna är formulerade för att ge dig en sammantagen bild av hur du ligger till, 
                                 och möjlighet att reflektera över vad som kan göra din vardag mer hållbar. Över tid kan du sedan följa hur du lyckas med att en mer hållbar livsstil och vardag.</Text>
 
-                            <Pressable style={[globalStyles.btnPrimary, {marginTop: 20, backgroundColor: '#08303c'}]} onPress={ () => setShowTest( true) }>
+                            <Pressable style={[globalStyles.btnPrimary, {marginTop: 20, backgroundColor: '#08303c'}]} onPress={ () => {setShowTest( true); setShowResults( false)} }>
                                 <Text style={{color: '#ffffff'}}>Testa din hållbarhet</Text>
+                            </Pressable>
+                            <Pressable style={[globalStyles.btnSecondary, {marginTop: 10}]} onPress={ () => { setShowTest( true); setShowResults( true)} }>
+                                <Text style={{color: '#ffffff'}}>Visa din HWI</Text>
                             </Pressable>
                             
                             <Text style={styles.contentTitle}>Resultatet delas in i en röd-gul-grön skala enligt följande:</Text>

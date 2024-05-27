@@ -11,6 +11,7 @@ const backIcon = {uri: 'https://sustainchange.se/app-images/back-arrow.png'};
 const OwiScreen = () => {
 
     const [showTest, setShowTest] = useState(false);
+    const [showResults, setShowResults] = useState(false);
 
     const isDarkMode = useColorScheme() === 'dark';
 
@@ -44,7 +45,7 @@ const OwiScreen = () => {
                                 
                             </View>
                         </View>
-                        <HwiTest questions={owiQuestions} />
+                        <HwiTest questions={owiQuestions} type="ovi" showResults={showResults} />
                     </>
 
                     ) : (
@@ -54,8 +55,11 @@ const OwiScreen = () => {
                             Som arbetsgrupp får ni ett teamresultat att diskutera och utvecklas utifrån. Därefter kan du och ni följa er utveckling över tid - mot en alltmer välfungerande organisation.
                         </Text>
                         
-                        <Pressable style={[globalStyles.btnPrimary, {marginVertical: 15, backgroundColor: '#08303c'}]} onPress={ () => setShowTest( true ) }>
+                        <Pressable style={[globalStyles.btnPrimary, {marginTop: 15, backgroundColor: '#08303c'}]} onPress={ () => {setShowTest( true ); setShowResults( false)} }>
                             <Text style={{color: '#ffffff'}}>Starta testet</Text>
+                        </Pressable>
+                        <Pressable style={[globalStyles.btnSecondary, {marginTop: 10, marginBottom: 15}]} onPress={ () => { setShowTest( true); setShowResults( true)} }>
+                                <Text style={{color: '#ffffff'}}>Visa din OWI</Text>
                         </Pressable>
 
                         <Text>Med tolv frågor som tar cirka fem minuter att besvara får du en indikation på hur välfungerande du tycker att organisationen är i relation till dig och ditt arbete. Frågorna är framtagna utifrån vad forskning och praktiska erfarenheter påvisat är viktiga kriterier för en välfungerande organisation. Dessa är:</Text>
