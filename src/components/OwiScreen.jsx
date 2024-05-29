@@ -1,6 +1,5 @@
 import React, {useState} from 'react';
-import {View, Text, useColorScheme, SafeAreaView, ImageBackground, StyleSheet, ScrollView, Pressable, Image } from 'react-native';
-import {Colors} from 'react-native/Libraries/NewAppScreen';
+import {View, Text, SafeAreaView, ImageBackground, StyleSheet, ScrollView, Pressable, Image } from 'react-native';
 import globalStyles from '../globalStyles';
 import owiQuestions from '../utils/owi-questions';
 import HwiTest from '../partials/HwiTest';
@@ -13,10 +12,8 @@ const OwiScreen = () => {
     const [showTest, setShowTest] = useState(false);
     const [showResults, setShowResults] = useState(false);
 
-    const isDarkMode = useColorScheme() === 'dark';
-
 	const backgroundStyle = {
-		backgroundColor: isDarkMode ? Colors.darker : '#f3f2f2',
+		backgroundColor: '#f3f2f2',
 		flex: 1,
 	};
 

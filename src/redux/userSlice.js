@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import Config from "react-native-config";
+import {API_BASE_URL, SUSTAIN_CHANGE_API_KEY} from "@env"
 
 const initialState = {
 	data: {},
@@ -13,11 +13,11 @@ export const fetchUserData = createAsyncThunk('userdata/fetchUserData', async ( 
 		userRequestData.append("token", jwt);
 	
 	const response = await fetch(
-			`${Config.API_BASE_URL}/sustainchange/v1/getuserbyid/`,
+			`${API_BASE_URL}/sustainchange/v1/getuserbyid/`,
 			{
 				method: "POST",
 				headers: {
-					Authorization: `Basic ${Config.SUSTAIN_CHANGE_API_KEY}`,
+					Authorization: `Basic ${SUSTAIN_CHANGE_API_KEY}`,
 				},
 				body: userRequestData,
 			}
@@ -31,11 +31,11 @@ export const fetchUserData = createAsyncThunk('userdata/fetchUserData', async ( 
 export const saveUserHwi = createAsyncThunk('userdata/saveUserHwi', async ( hwiData ) => {
 
 	const response = await fetch(
-		`${Config.API_BASE_URL}/sustainchange/v1/saveuserhvi/?token=${hwiData.token}&hvidata=${JSON.stringify(hwiData.hwi)}`,
+		`${API_BASE_URL}/sustainchange/v1/saveuserhvi/?token=${hwiData.token}&hvidata=${JSON.stringify(hwiData.hwi)}`,
 		{
 			method: "GET",
 			headers: {
-				Authorization: `Basic ${Config.SUSTAIN_CHANGE_API_KEY}`,
+				Authorization: `Basic ${SUSTAIN_CHANGE_API_KEY}`,
 			},
 		}
 	);
@@ -52,11 +52,11 @@ export const saveUserOvi = createAsyncThunk('userdata/saveUserOvi', async ( hwiD
             userRequestData.append( 'ovidata', JSON.stringify(hwiData.hwi) );
 
 	const response = await fetch(
-		`${Config.API_BASE_URL}/sustainchange/v1/saveuserovi/`,
+		`${API_BASE_URL}/sustainchange/v1/saveuserovi/`,
 		{
 			method: "POST",
 			headers: {
-				Authorization: `Basic ${Config.SUSTAIN_CHANGE_API_KEY}`,
+				Authorization: `Basic ${SUSTAIN_CHANGE_API_KEY}`,
 			},
 			body: userRequestData
 		}
@@ -70,11 +70,11 @@ export const saveUserOvi = createAsyncThunk('userdata/saveUserOvi', async ( hwiD
 export const getHwiMsgs = createAsyncThunk('userdata/getHwiMsgs', async ( hwiData ) => {
 
 	const response = await fetch(
-		`${Config.API_BASE_URL}/sustainchange/v1/gethvimsgs/?lang=sv&type=${hwiData.type}&count=${hwiData.count}`,
+		`${API_BASE_URL}/sustainchange/v1/gethvimsgs/?lang=sv&type=${hwiData.type}&count=${hwiData.count}`,
 		{
 			method: "GET",
 			headers: {
-				Authorization: `Basic ${Config.SUSTAIN_CHANGE_API_KEY}`,
+				Authorization: `Basic ${SUSTAIN_CHANGE_API_KEY}`,
 			},
 		}
 	);

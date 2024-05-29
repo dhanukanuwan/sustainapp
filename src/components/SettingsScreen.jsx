@@ -1,8 +1,7 @@
 import React, {useContext} from 'react';
-import {View, Text, StyleSheet, SafeAreaView, useColorScheme, Image, Pressable  } from 'react-native';
+import {View, Text, StyleSheet, SafeAreaView, Image, Pressable  } from 'react-native';
 import { useSelector } from 'react-redux';
 import Spinner from './Spinner';
-import {Colors} from 'react-native/Libraries/NewAppScreen';
 import globalStyles from '../globalStyles';
 import {AuthContext} from '../context/AuthContext';
 
@@ -13,10 +12,8 @@ const SettingsScreen = () => {
 
 	const authContext = useContext(AuthContext);
 
-	const isDarkMode = useColorScheme() === 'dark';
-
 	const backgroundStyle = {
-		backgroundColor: isDarkMode ? Colors.darker : '#f3f2f2',
+		backgroundColor: '#f3f2f2',
 		flex: 1,
 	};
 

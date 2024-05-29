@@ -3,7 +3,7 @@ import axios from 'axios';
 import {AuthContext} from './AuthContext';
 import createAuthRefreshInterceptor from 'axios-auth-refresh';
 import * as Keychain from 'react-native-keychain';
-import Config from "react-native-config";
+import {API_BASE_URL, SUSTAIN_CHANGE_API_KEY} from "@env"
 
 const AxiosContext = createContext();
 const {Provider} = AxiosContext;
@@ -12,14 +12,14 @@ const AxiosProvider = ({children}) => {
     const authContext = useContext(AuthContext);
 
     const authAxios = axios.create({
-        baseURL: Config.API_BASE_URL,
+        baseURL: API_BASE_URL,
     });
 
     const publicAxios = axios.create({
-        baseURL: Config.API_BASE_URL,
+        baseURL: API_BASE_URL,
     });
 
-    const basicAuth = `Basic ${Config.SUSTAIN_CHANGE_API_KEY}`;
+    const basicAuth = `Basic ${SUSTAIN_CHANGE_API_KEY}`;
 
     authAxios.interceptors.request.use(
         config => {
@@ -50,7 +50,7 @@ const AxiosProvider = ({children}) => {
         const options = {
             method: 'POST',
             data,
-            url: `${Config.API_BASE_URL}/simple-jwt-login/v1/auth/refresh/`,
+            url: `${API_BASE_URL}/simple-jwt-login/v1/auth/refresh/`,
             headers: { 'Authorization': basicAuth, 'Content-Type': 'application/json' }
         };
 

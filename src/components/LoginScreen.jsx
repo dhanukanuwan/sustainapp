@@ -48,6 +48,7 @@ const LoginScreen = () => {
 			);
 		} catch (error) {
 			Alert.alert('Login Failed');
+			console.log( error )
 		}
 		
 	}
@@ -65,8 +66,8 @@ const LoginScreen = () => {
 							<View style={styles.loginform}>
 								<Text style={styles.sectionTitle}>Välkommen till</Text>
 								<Image source={logo} style={styles.loginLogo} />
-								<TextInput style={globalStyles.inputStyles} placeholder="Vänligen skriv din mailadress." inputMode="email" value={userEmail} onChangeText={setUserEmail} autoCapitalize="none" />
-								<TextInput style={globalStyles.inputStyles} placeholder="Vänligen skriv ditt lösenord" secureTextEntry={true} value={userPassword} onChangeText={setUserPassword} autoCapitalize="none"  />
+								<TextInput style={globalStyles.inputStyles} placeholder="Vänligen skriv din mailadress." inputMode="email" value={userEmail} onChangeText={setUserEmail} autoCapitalize="none" placeholderTextColor="#333"  />
+								<TextInput style={globalStyles.inputStyles} placeholder="Vänligen skriv ditt lösenord" secureTextEntry={true} value={userPassword} onChangeText={setUserPassword} autoCapitalize="none" placeholderTextColor="#333"   />
 								<Pressable style={globalStyles.btnPrimary} onPress={ handleLoginSubmit }>
 									<Text style={{color: '#ffffff'}}>Logga in</Text>
 								</Pressable>

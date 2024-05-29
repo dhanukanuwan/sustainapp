@@ -9,7 +9,8 @@ const globalStyles = StyleSheet.create({
       height: 40,
       backgroundColor: '#ffffff',
       paddingHorizontal: 7,
-      width: '100%'
+      width: '100%',
+      color: '#333333'
 	},
     btnPrimary: {
         backgroundColor: '#cc9f00',

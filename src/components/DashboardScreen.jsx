@@ -1,8 +1,7 @@
 import React, {useEffect, useCallback} from 'react';
-import {View, Text, SafeAreaView, useColorScheme, Pressable, StyleSheet } from 'react-native';
+import {View, Text, SafeAreaView, Pressable, StyleSheet } from 'react-native';
 import Header from './dashboard/Header';
 import Statusbar from '../partials/Statusbar';
-import {Colors} from 'react-native/Libraries/NewAppScreen';
 import { useSelector, useDispatch } from 'react-redux';
 import {fetchUserData } from '../redux/userSlice';
 import * as Keychain from 'react-native-keychain';
@@ -35,10 +34,8 @@ const DashboardScreen = ({ navigation }) => {
     	loadUserData()
     }, [loadUserData])
 
-    const isDarkMode = useColorScheme() === 'dark';
-
 	const backgroundStyle = {
-		backgroundColor: isDarkMode ? Colors.darker : '#f3f2f2'
+		backgroundColor: '#f3f2f2'
 	};
 
 	// const handleBtnClick = ( screen ) => {
