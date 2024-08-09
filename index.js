@@ -11,6 +11,8 @@ import React from 'react';
 import { store } from './src/store';
 import { Provider } from 'react-redux';
 
+import "./src/localize/i18n";
+
 const Root = () => {
     return (
       <AuthProvider>

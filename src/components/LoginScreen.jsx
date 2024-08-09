@@ -5,6 +5,7 @@ import {AuthContext} from '../context/AuthContext';
 import * as Keychain from 'react-native-keychain';
 import {AxiosContext} from '../context/AxiosContext';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
+import { useTranslation } from 'react-i18next';
 //import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const image = {uri: 'https://sustainchange.se/app-images/login-bg.jpg'};
@@ -16,6 +17,8 @@ const LoginScreen = () => {
 	const [userPassword, setUserPassword] = useState('');
 	const authContext = useContext(AuthContext);
   	const {authAxios} = useContext(AxiosContext);
+
+	  const { t } = useTranslation();
 
 	  const isDarkMode = useColorScheme() === 'dark';
 
@@ -64,12 +67,12 @@ const LoginScreen = () => {
 					<View style={styles.innerContainer}>
 						<ImageBackground source={image} resizeMode="cover" style={styles.image}>
 							<View style={styles.loginform}>
-								<Text style={styles.sectionTitle}>Välkommen till</Text>
+								<Text style={styles.sectionTitle}>{t('app_login_welcome')}</Text>
 								<Image source={logo} style={styles.loginLogo} />
-								<TextInput style={globalStyles.inputStyles} placeholder="Vänligen skriv din mailadress." inputMode="email" value={userEmail} onChangeText={setUserEmail} autoCapitalize="none" placeholderTextColor="#333"  />
-								<TextInput style={globalStyles.inputStyles} placeholder="Vänligen skriv ditt lösenord" secureTextEntry={true} value={userPassword} onChangeText={setUserPassword} autoCapitalize="none" placeholderTextColor="#333"   />
+								<TextInput style={globalStyles.inputStyles} placeholder={t('app_enter_email')} inputMode="email" value={userEmail} onChangeText={setUserEmail} autoCapitalize="none" placeholderTextColor="#333"  />
+								<TextInput style={globalStyles.inputStyles} placeholder={t('app_enter_pswd')} secureTextEntry={true} value={userPassword} onChangeText={setUserPassword} autoCapitalize="none" placeholderTextColor="#333"   />
 								<Pressable style={globalStyles.btnPrimary} onPress={ handleLoginSubmit }>
-									<Text style={{color: '#ffffff'}}>Logga in</Text>
+									<Text style={{color: '#ffffff'}}>{t('community_login')}</Text>
 								</Pressable>
 							</View>
 						</ImageBackground>
