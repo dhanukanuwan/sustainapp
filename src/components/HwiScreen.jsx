@@ -3,6 +3,7 @@ import {View, Text, SafeAreaView, ImageBackground, StyleSheet, ScrollView, Press
 import globalStyles from '../globalStyles';
 import HwiTest from '../partials/HwiTest';
 import hwiQuestions from '../utils/hwi-questions';
+import { useTranslation } from 'react-i18next';
 
 const coverImage = {uri: 'https://sustainchange.se/app-images/hwi-cover.jpg'};
 const backIcon = {uri: 'https://sustainchange.se/app-images/back-arrow.png'};
@@ -11,6 +12,7 @@ const HwiScreen = () => {
 
     const [showTest, setShowTest] = useState(false);
     const [showResults, setShowResults] = useState(false);
+    const { t } = useTranslation();
 
 	const backgroundStyle = {
 		backgroundColor: '#f3f2f2',
@@ -23,7 +25,7 @@ const HwiScreen = () => {
                 <View style={styles.container}>
                     <ImageBackground source={coverImage} resizeMode="cover" style={styles.image}>
                         <View style={styles.innerContainer}>
-                            <Text style={styles.bannerTitle}>Human Well-being Index</Text>
+                            <Text style={styles.bannerTitle}>{t('hwi_title')}</Text>
                         </View>
                     </ImageBackground>
                 </View>
@@ -37,7 +39,7 @@ const HwiScreen = () => {
 								<View style={styles.backIconInner}>
 									<Image source={backIcon} style={styles.backIcon}></Image>
 									<Pressable onPress={ () => setShowTest(false) } >
-										<Text style={styles.backText}>Gå tillbaka</Text>
+										<Text style={styles.backText}>{t('app_go_back')}</Text>
 									</Pressable>
 									
 								</View>
@@ -47,22 +49,21 @@ const HwiScreen = () => {
 
                     ) : (
                         <>
-                            <Text style={styles.contentTitle}>Ta hjälp av vårt test Human Well-being Index, som hjälper dig att må bra och prestera hållbart.</Text>
-                            <Text>På tolv frågor och cirka fem minuter kan du få en indikation på hur hållbar din vardag är. Frågorna är formulerade för att ge dig en sammantagen bild av hur du ligger till, 
-                                och möjlighet att reflektera över vad som kan göra din vardag mer hållbar. Över tid kan du sedan följa hur du lyckas med att en mer hållbar livsstil och vardag.</Text>
+                            <Text style={styles.contentTitle}>{t('hwi_info_text_1')}</Text>
+                            <Text>{t('hwi_info_text_2')}</Text>
 
                             <Pressable style={[globalStyles.btnPrimary, {marginTop: 20, backgroundColor: '#08303c'}]} onPress={ () => {setShowTest( true); setShowResults( false)} }>
-                                <Text style={{color: '#ffffff'}}>Testa din hållbarhet</Text>
+                                <Text style={{color: '#ffffff'}}>{t('test_your_wellbeing')}</Text>
                             </Pressable>
                             <Pressable style={[globalStyles.btnSecondary, {marginTop: 10}]} onPress={ () => { setShowTest( true); setShowResults( true)} }>
-                                <Text style={{color: '#ffffff'}}>Visa din HWI</Text>
+                                <Text style={{color: '#ffffff'}}>{t('view_your_hwi')}</Text>
                             </Pressable>
                             
-                            <Text style={styles.contentTitle}>Resultatet delas in i en röd-gul-grön skala enligt följande:</Text>
-                            <Text style={styles.inlineText}><Text style={[styles.textSpan, {backgroundColor: '#b23722'}]}> Rött (12-24) </Text> : Tyder på en ohållbar vardag och en riskfaktor för ohälsa – en riskposition. Du behöver göra något åt din situation för att inte riskera din hälsa.</Text>
-                            <Text style={styles.inlineText}><Text style={[styles.textSpan, {backgroundColor: '#e9b90f'}]}> Gult (25-59) </Text> : Tyder på att delar av din vardag är ohållbar och att du pendlar mellan en risk- och friskposition. Genom att göra förändringar i din vardag kan du ta kommandot och göra tillvaron mer hållbar.</Text>
-                            <Text style={styles.inlineText}><Text style={[styles.textSpan, {backgroundColor: '#586230'}]}> Grönt (60–72) </Text> : Tyder på en hållbar vardag och är en friskfaktor för hälsa – en friskposition.</Text>
-                            <Text>Du kan känna dig trygg med att göra testet för dina svar behandlas helt konfidentiellt!</Text>
+                            <Text style={styles.contentTitle}>{t('hwi_info_text_3')}</Text>
+                            <Text style={styles.inlineText}><Text style={[styles.textSpan, {backgroundColor: '#b23722'}]}> {t('hwi_red_text')} (12-24) </Text> : {t('hwi_info_red_text')}</Text>
+                            <Text style={styles.inlineText}><Text style={[styles.textSpan, {backgroundColor: '#e9b90f'}]}> {t('hwi_yellow_text')}(25-59) </Text> : {t('hwi_info_yellow_text')}</Text>
+                            <Text style={styles.inlineText}><Text style={[styles.textSpan, {backgroundColor: '#586230'}]}> {t('hwi_green_text')} (60-72) </Text> : {t('hwi_info_green_text')}</Text>
+                            <Text>{t('hwi_info_text_4')}</Text>
                         </>
                     )}
 

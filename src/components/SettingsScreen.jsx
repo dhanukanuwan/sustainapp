@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import Spinner from './Spinner';
 import globalStyles from '../globalStyles';
 import {AuthContext} from '../context/AuthContext';
+import { useTranslation } from 'react-i18next';
 
 const SettingsScreen = () => {
 
@@ -11,6 +12,8 @@ const SettingsScreen = () => {
     const userDataStatus = useSelector((state) => state.userdata.success );
 
 	const authContext = useContext(AuthContext);
+
+	const { t } = useTranslation();
 
 	const backgroundStyle = {
 		backgroundColor: '#f3f2f2',
@@ -32,22 +35,22 @@ const SettingsScreen = () => {
 
 					<View style={styles.formContainer}>
 						<View style={styles.inputRow}>
-							<Text>Förnamn</Text>
+							<Text>{t('app_first_name')}</Text>
 							<Text style={styles.inputVal}>{userData.first_name}</Text>
 						</View>
 						<View style={styles.inputRow}>
-							<Text>Efternamn</Text>
+							<Text>{t('app_last_name')}</Text>
 							<Text style={styles.inputVal}>{userData.last_name}</Text>
 						</View>
 						<View style={styles.inputRow}>
-							<Text>Mailadress</Text>
+							<Text>{t('app_email_address')}</Text>
 							<Text style={styles.inputVal}>{userData.email}</Text>
 						</View>
 					</View>
 
 					<View style={{marginTop: 60}}>
 						<Pressable style={globalStyles.btnSecondary} onPress={ () =>  authContext.logout()}>
-							<Text style={{color: '#ffffff'}}>Logga ut</Text>
+							<Text style={{color: '#ffffff'}}>{t('app_log_out')}</Text>
 						</Pressable>
 					</View>
 

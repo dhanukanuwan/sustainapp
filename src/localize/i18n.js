@@ -47,7 +47,7 @@ i18n
     fallbackLng: defaultLng,
     load:"languageOnly",
     react: {
-      useSuspense: false,
+      useSuspense: true,
     },
     backend: {
         backends: [
@@ -56,7 +56,7 @@ i18n
         ],
         backendOptions: [
             {
-                expirationTime: 1 * 24 * 60 * 60 * 1000 // 1 day
+                expirationTime: 60 * 1000 // 1 day 1 * 24 * 60 * 60 * 1000
             },
             {
                 loadPath: `${API_BASE_URL}/sustainchange/v1/gettranslatedstrings/?lang={{lng}}`,

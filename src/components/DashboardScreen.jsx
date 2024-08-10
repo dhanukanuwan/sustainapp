@@ -6,12 +6,15 @@ import { useSelector, useDispatch } from 'react-redux';
 import {fetchUserData } from '../redux/userSlice';
 import * as Keychain from 'react-native-keychain';
 import globalStyles from '../globalStyles';
+import { useTranslation } from 'react-i18next';
 
 const DashboardScreen = ({ navigation }) => {
 
     const userData = useSelector((state) => state.userdata.data );
     const dispatch = useDispatch();
     const userDataStatus = useSelector((state) => state.userdata.success );
+
+	const { t } = useTranslation();
 
     const loadUserData = useCallback( async () => {
 		
@@ -49,20 +52,20 @@ const DashboardScreen = ({ navigation }) => {
 
 			{userData?.all_capabilities && userData?.all_capabilities.includes('hwi') &&
 				<View style={styles.widget}>
-					<Text style={styles.widgetTitle}>Human Well-being Index</Text>
-					<Text style={styles.widgetText}>Ta hjälp av vårt test Human Well-being Index, som hjälper dig att må bra och prestera hållbart.</Text>
+					<Text style={styles.widgetTitle}>{t('hwi_title')}</Text>
+					<Text style={styles.widgetText}>{t('hvi_dash_desc')}</Text>
 					<Pressable style={globalStyles.btnSecondary} onPress={ () => navigation.navigate('Hwi') }>
-						<Text style={{color: '#ffffff'}}>Gör testet här</Text>
+						<Text style={{color: '#ffffff'}}>{t('app_go_to_test')}</Text>
 					</Pressable>
 				</View>
 			}
 
 			{userData?.all_capabilities && userData?.all_capabilities.includes('owi') &&
 				<View style={styles.widget}>
-					<Text style={styles.widgetTitle}>Organisation Well function Index</Text>
-					<Text style={styles.widgetText}>Detta test ger dig och er svar på hur välfungerande du och ni tycker att organisationen är.</Text>
+					<Text style={styles.widgetTitle}>{t('owi_title')}</Text>
+					<Text style={styles.widgetText}>{t('home_owi_desc')}</Text>
 					<Pressable style={globalStyles.btnPrimary} onPress={ () => navigation.navigate('Owi') }>
-						<Text style={{color: '#ffffff'}}>Gör testet här</Text>
+						<Text style={{color: '#ffffff'}}>{t('app_go_to_test')}</Text>
 					</Pressable>
 				</View>
 			}

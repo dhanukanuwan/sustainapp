@@ -1,5 +1,5 @@
 import React, {useState, useContext} from 'react';
-import {View, TextInput, ImageBackground, Pressable, Image, StyleSheet, Text, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, Alert,  SafeAreaView, StatusBar, useColorScheme } from 'react-native';
+import {View, TextInput, ImageBackground, Pressable, Image, StyleSheet, Text, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, Alert,  SafeAreaView, StatusBar, useColorScheme, ActivityIndicator } from 'react-native';
 import globalStyles from '../globalStyles';
 import {AuthContext} from '../context/AuthContext';
 import * as Keychain from 'react-native-keychain';
@@ -17,6 +17,7 @@ const LoginScreen = () => {
 	const [userPassword, setUserPassword] = useState('');
 	const authContext = useContext(AuthContext);
   	const {authAxios} = useContext(AxiosContext);
+	const [isLoading, setIsLoading] = useState( false );
 
 	  const { t } = useTranslation();
 
@@ -28,6 +29,8 @@ const LoginScreen = () => {
 	};
 
 	const handleLoginSubmit = async () => {
+
+		setIsLoading( true );
 
 		const requestBody = JSON.stringify({
             email: userEmail,
@@ -53,6 +56,8 @@ const LoginScreen = () => {
 			Alert.alert('Login Failed');
 			console.log( error )
 		}
+
+		setIsLoading( false );
 		
 	}
 
@@ -72,13 +77,18 @@ const LoginScreen = () => {
 								<TextInput style={globalStyles.inputStyles} placeholder={t('app_enter_email')} inputMode="email" value={userEmail} onChangeText={setUserEmail} autoCapitalize="none" placeholderTextColor="#333"  />
 								<TextInput style={globalStyles.inputStyles} placeholder={t('app_enter_pswd')} secureTextEntry={true} value={userPassword} onChangeText={setUserPassword} autoCapitalize="none" placeholderTextColor="#333"   />
 								<Pressable style={globalStyles.btnPrimary} onPress={ handleLoginSubmit }>
-									<Text style={{color: '#ffffff'}}>{t('community_login')}</Text>
+									{ isLoading === true ? (
+										<ActivityIndicator size="small" color="#ffffff" />
+									) : (
+										<Text style={{color: '#ffffff'}}>{t('community_login')}</Text>
+									)}
 								</Pressable>
 							</View>
 						</ImageBackground>
 					</View>
 				</TouchableWithoutFeedback>
 			</KeyboardAvoidingView>
+			
 		</SafeAreaView>
 		
 	);

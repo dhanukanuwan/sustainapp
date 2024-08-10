@@ -1,5 +1,5 @@
 /**
- * Sample React Native App
+ * Sustain Change React Native App
  * https://github.com/facebook/react-native
  *
  * @format
@@ -17,6 +17,7 @@ import DashboardScreen from './src/components/DashboardScreen';
 import HwiScreen from './src/components/HwiScreen';
 import OwiScreen from './src/components/OwiScreen';
 import SettingsScreen from './src/components/SettingsScreen';
+import { useTranslation } from 'react-i18next';
 
 const Stack = createNativeStackNavigator();
 
@@ -24,6 +25,7 @@ const App = () => {
 
   const authContext = useContext(AuthContext);
   const [status, setStatus] = useState('loading');
+  const { t } = useTranslation();
 
   const loadJWT = useCallback(async () => {
     try {
@@ -79,9 +81,9 @@ const App = () => {
           { authContext?.authState?.authenticated !== false ? (
             <>
               <Stack.Screen options={{headerShown: false}} name="Dashboard" component={DashboardScreen} />
-              <Stack.Screen name="Hwi" options={{ title: '', headerBackTitle: 'Tillbaka', headerBackTitleStyle: { fontSize: 15 }, }} component={HwiScreen} />
-              <Stack.Screen name="Owi" options={{ title: '', headerBackTitle: 'Tillbaka', headerBackTitleStyle: { fontSize: 15 }, }} component={OwiScreen} />
-              <Stack.Screen name="Settings" options={{ title: 'Profil', headerBackTitle: 'Tillbaka', headerBackTitleStyle: { fontSize: 15 }, }} component={SettingsScreen} />
+              <Stack.Screen name="Hwi" options={{ title: '', headerBackTitle: t('app_back'), headerBackTitleStyle: { fontSize: 15 }, }} component={HwiScreen} />
+              <Stack.Screen name="Owi" options={{ title: '', headerBackTitle: t('app_back'), headerBackTitleStyle: { fontSize: 15 }, }} component={OwiScreen} />
+              <Stack.Screen name="Settings" options={{ title: t('profile_txt'), headerBackTitle: t('app_back'), headerBackTitleStyle: { fontSize: 15 }, }} component={SettingsScreen} />
             </>
           ) : (
             <>
