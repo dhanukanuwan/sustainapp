@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import {getHwiMsgs } from '../redux/userSlice';
 import RenderHtml from 'react-native-render-html';
 import HwiSummary from './HwiSummary';
+import { useTranslation } from 'react-i18next';
 
 const HwiResults = ({type}) => {
 
@@ -11,6 +12,7 @@ const HwiResults = ({type}) => {
     const userOwi = useSelector((state) => state.userdata.data.ovi_data );
     const dispatch = useDispatch();
     const { width } = useWindowDimensions();
+    const { t, i18n } = useTranslation();
 
     const [hwiCount, setHwiCount] = useState(0);
     const [owiCount, setOwiCount] = useState(0);
@@ -46,7 +48,8 @@ const HwiResults = ({type}) => {
 
             const requestData = {
 				type: type,
-				count: hwiCount
+				count: hwiCount,
+                lng: i18n.language
 			}
 
             dispatch(getHwiMsgs(requestData))
@@ -88,7 +91,7 @@ const HwiResults = ({type}) => {
     return(
         <>
             <View style={styles.countWrap}>
-                <View><Text style={styles.countText}>{`Ditt ${type === 'hvi' ? 'HWI' : 'OWI'} är:`} </Text></View>
+                <View><Text style={styles.countText}>{t(`your_${type}_is`)} </Text></View>
                 <View><Text style={[styles.countText, {backgroundColor: getHviColor(type === 'hvi' ? hwiCount : owiCount), color: '#ffffff', paddingVertical: 10, paddingHorizontal: 15}]}>{ type === 'hvi' ? hwiCount : owiCount}</Text></View>
             </View>
             { type === 'hvi' && ! loading &&

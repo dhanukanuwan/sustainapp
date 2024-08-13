@@ -1,9 +1,10 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect, useCallback } from 'react';
 import {View, Text, SafeAreaView, ImageBackground, StyleSheet, ScrollView, Pressable, Image } from 'react-native';
 import globalStyles from '../globalStyles';
 import HwiTest from '../partials/HwiTest';
-import hwiQuestions from '../utils/hwi-questions';
 import { useTranslation } from 'react-i18next';
+import { useSelector, useDispatch } from 'react-redux';
+import {fetchHwiQuestions } from '../redux/userSlice';
 
 const coverImage = {uri: 'https://sustainchange.se/app-images/hwi-cover.jpg'};
 const backIcon = {uri: 'https://sustainchange.se/app-images/back-arrow.png'};
@@ -12,7 +13,31 @@ const HwiScreen = () => {
 
     const [showTest, setShowTest] = useState(false);
     const [showResults, setShowResults] = useState(false);
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
+
+    const hwiField = `field_hwi_${i18n.language}_questions`;
+
+    const fetchedHwiQuestions = useSelector((state) => state.userdata.data[hwiField] );
+    const dispatch = useDispatch();
+
+    const loadHwiQuestions = useCallback( async () => {
+		
+		if ( !fetchedHwiQuestions ) {
+
+			try {
+				dispatch(fetchHwiQuestions(hwiField))
+		
+			} catch (error) {
+			  console.log(`User data error: ${error.message}`);
+			}
+
+		}
+
+    }, [fetchedHwiQuestions]);
+    
+    useEffect( () => {
+    	loadHwiQuestions()
+    }, [loadHwiQuestions])
 
 	const backgroundStyle = {
 		backgroundColor: '#f3f2f2',
@@ -44,7 +69,7 @@ const HwiScreen = () => {
 									
 								</View>
 							</View>
-                        	<HwiTest questions={hwiQuestions} type="hvi" showResults={showResults} />
+                            {fetchedHwiQuestions?.index_questions && <HwiTest questions={fetchedHwiQuestions?.index_questions} type="hvi" showResults={showResults} /> }
                        </>
 
                     ) : (

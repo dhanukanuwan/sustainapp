@@ -1,10 +1,17 @@
 import React, {useState, useEffect} from 'react';
 import {View, Text, StyleSheet } from 'react-native';
+import { useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 
 const HwiSummary = ({type, HwiData}) => {
 
     const [tableHead, setTableHead] = useState('');
     const [tableData, setTableData] = useState([]);
+	const { i18n } = useTranslation();
+
+    const hwiField = `field_${type === 'ovi' ? 'owi' : 'hwi'}_${i18n.language}_questions`;
+
+    const fetchedHwiQuestions = useSelector((state) => state.userdata.data[hwiField] );
 
     useEffect( () => {
 
@@ -40,38 +47,6 @@ const HwiSummary = ({type, HwiData}) => {
 
     }
 
-	let questions = [
-        'Meningsfullhet i vardagen',
-		'Kontroll över vardagsstressen',
-		'Tillräckligt med återhämtning',
-		'Tillräckligt med sömn',
-		'Balans mellan krav och resurser på jobbet',
-		'Balans mellan krav och resurser hemma',
-		'Ork på jobbet',
-		'Ork hemma',
-		'Nöjd med arbetsinsatsen',
-		'Nöjd med fritiden',
-		'Kan koppla bort jobbet när man är ledig',
-		'Kan koppla bort privata frågor när man jobbar'
-    ]; 
-
-    if ( type === 'ovi' ) {
-		questions = [
-			'Tydliga visioner och mål',
-			'Bidrar till organisationens resultat',
-			'Prioriterar varje dag',
-			'Tydliga ansvarsområden och mål',
-			'Har resurser för arbetsuppgifterna',
-			'Delar organisationens värderingar',
-			'Värderingarna är viktiga',
-			'Tillit till sin chef',
-			'Kollegialt stöd',
-			'Trygg i gruppen och kan vara sig själv',
-			'Hinner genomföra förändringar',
-			'Förtroende för ledningen'
-		];
-	}
-
     return(
         <View>
            { tableHead && tableHead.length > 0 &&
@@ -81,15 +56,19 @@ const HwiSummary = ({type, HwiData}) => {
 						<Text>{tableHead}</Text>
 					</View>
 
-					{questions.map( (question, i) => {
-						return(
-							<View key={i} style={[styles.tableHead, {backgroundColor: i%2 === 0 ? '#f1f1f1' : '#ffffff', alignItems: 'center',}]}>
-								<Text style={{paddingRight: 5}}>{i+1}.</Text>
-								<Text style={{flexGrow: 1, fontSize: 13}}>{question}</Text>
-								<Text style={[styles.hwiValue, {backgroundColor: getHviColor(tableData[i])}]}>{tableData[i]}</Text>
-							</View>
-						);
-					})}
+					{fetchedHwiQuestions?.sustain_index_short_questions &&
+						<>
+							{fetchedHwiQuestions?.sustain_index_short_questions.map( (question, i) => {
+								return(
+									<View key={i} style={[styles.tableHead, {backgroundColor: i%2 === 0 ? '#f1f1f1' : '#ffffff', alignItems: 'center',}]}>
+										<Text style={{paddingRight: 5}}>{i+1}.</Text>
+										<Text style={{flexGrow: 1, fontSize: 13}}>{question.short_question}</Text>
+										<Text style={[styles.hwiValue, {backgroundColor: getHviColor(tableData[i])}]}>{tableData[i]}</Text>
+									</View>
+								);
+							})}
+						</>
+					}
 
 				</View>
            }

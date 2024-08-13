@@ -1,8 +1,10 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import {View, Text, SafeAreaView, ImageBackground, StyleSheet, ScrollView, Pressable, Image } from 'react-native';
 import globalStyles from '../globalStyles';
-import owiQuestions from '../utils/owi-questions';
 import HwiTest from '../partials/HwiTest';
+import { useTranslation } from 'react-i18next';
+import { useSelector, useDispatch } from 'react-redux';
+import {fetchHwiQuestions } from '../redux/userSlice';
 
 const coverImage = {uri: 'https://sustainchange.se/app-images/hwi-cover.jpg'};
 const backIcon = {uri: 'https://sustainchange.se/app-images/back-arrow.png'};
@@ -11,6 +13,31 @@ const OwiScreen = () => {
 
     const [showTest, setShowTest] = useState(false);
     const [showResults, setShowResults] = useState(false);
+    const { t, i18n } = useTranslation();
+
+    const owiField = `field_owi_${i18n.language}_questions`;
+
+    const fetchedOwiQuestions = useSelector((state) => state.userdata.data[owiField] );
+    const dispatch = useDispatch();
+
+    const loadOwiQuestions = useCallback( async () => {
+		
+		if ( !fetchedOwiQuestions ) {
+
+			try {
+				dispatch(fetchHwiQuestions(owiField))
+		
+			} catch (error) {
+			  console.log(`User data error: ${error.message}`);
+			}
+
+		}
+
+    }, [fetchedOwiQuestions]);
+    
+    useEffect( () => {
+    	loadOwiQuestions()
+    }, [loadOwiQuestions])
 
 	const backgroundStyle = {
 		backgroundColor: '#f3f2f2',
@@ -23,7 +50,7 @@ const OwiScreen = () => {
                 <View style={styles.container}>
                     <ImageBackground source={coverImage} resizeMode="cover" style={styles.image}>
                         <View style={styles.innerContainer}>
-                            <Text style={styles.bannerTitle}>Organisation Well function Index</Text>
+                            <Text style={styles.bannerTitle}>{t('owi_title')}</Text>
                         </View>
                     </ImageBackground>
                 </View>
@@ -37,41 +64,39 @@ const OwiScreen = () => {
                             <View style={styles.backIconInner}>
                                 <Image source={backIcon} style={styles.backIcon}></Image>
                                 <Pressable onPress={ () => setShowTest(false) } >
-                                    <Text style={styles.backText}>Gå tillbaka</Text>
+                                    <Text style={styles.backText}>{t('app_go_back')}</Text>
                                 </Pressable>
                                 
                             </View>
                         </View>
-                        <HwiTest questions={owiQuestions} type="ovi" showResults={showResults} />
+                        {fetchedOwiQuestions?.index_questions && <HwiTest questions={fetchedOwiQuestions?.index_questions} type="ovi" showResults={showResults} /> }
                     </>
 
                     ) : (
                     <>
-                        <Text style={styles.contentTitle}>Med Organisation Well function Index kan du se hur välfungerande du tycker att organisationen är i relation till dig och ditt arbete.</Text>
-                        <Text>
-                            Som arbetsgrupp får ni ett teamresultat att diskutera och utvecklas utifrån. Därefter kan du och ni följa er utveckling över tid - mot en alltmer välfungerande organisation.
-                        </Text>
+                        <Text style={styles.contentTitle}>{t('owi_info_text_1')}</Text>
+                        <Text>{t('owi_info_text_2')}</Text>
                         
                         <Pressable style={[globalStyles.btnPrimary, {marginTop: 15, backgroundColor: '#08303c'}]} onPress={ () => {setShowTest( true ); setShowResults( false)} }>
-                            <Text style={{color: '#ffffff'}}>Starta testet</Text>
+                            <Text style={{color: '#ffffff'}}>{t('app_go_to_test')}</Text>
                         </Pressable>
                         <Pressable style={[globalStyles.btnSecondary, {marginTop: 10, marginBottom: 15}]} onPress={ () => { setShowTest( true); setShowResults( true)} }>
-                                <Text style={{color: '#ffffff'}}>Visa din OWI</Text>
+                                <Text style={{color: '#ffffff'}}>{t('app_view_owi')}</Text>
                         </Pressable>
 
-                        <Text>Med tolv frågor som tar cirka fem minuter att besvara får du en indikation på hur välfungerande du tycker att organisationen är i relation till dig och ditt arbete. Frågorna är framtagna utifrån vad forskning och praktiska erfarenheter påvisat är viktiga kriterier för en välfungerande organisation. Dessa är:</Text>
+                        <Text>{t('owi_info_text_3')}</Text>
 
                         <View style={styles.listItemsContainer}>
-                            <Text style={styles.listItem}>{'\u2022'} att medarbetaren har god överblick, ser sin och den egna arbetsgruppens roll i hela arbetsprocessen</Text>
-                            <Text style={styles.listItem}>{'\u2022'} att medarbetaren själv har kontroll över sina arbetsuppgifter och full empowerment, det vill säga har kompetens att utföra sina uppgifter samt de resurser och det mandat som krävs</Text>
-                            <Text style={styles.listItem}>{'\u2022'} att relationerna på arbetsplatsen är goda och trygga</Text>
+                            <Text style={styles.listItem}>{'\u2022'} {t('owi_info_text_4')}</Text>
+                            <Text style={styles.listItem}>{'\u2022'} {t('owi_info_text_5')}</Text>
+                            <Text style={styles.listItem}>{'\u2022'} {t('owi_info_text_6')}</Text>
                         </View>
                         
-                        <Text style={{marginVertical: 15}}>Indexet kan vara mellan 12-72 där indexet indikerar hur organisationen fungerar i relation till dig och dina arbetsuppgifter. Teamets resultatet ger en indikation på hur ni som grupp upplever organisationen.</Text>
-                        <Text style={styles.inlineText}><Text style={[styles.textSpan, {backgroundColor: '#b23722'}]}> Rött (12-24) </Text> : Det kan handla om något tillfälligt, t ex en kris. Om det inte är en tillfällig situation är rött en allvarlig indikation på att organisationen inte är välfungerande ur ditt perspektiv eller om teamresultatet är rött ur hela gruppens perspektiv.</Text>
-                        <Text style={styles.inlineText}><Text style={[styles.textSpan, {backgroundColor: '#e9b90f'}]}> Gult (25-59) </Text> : Här är det intressant att se vad det är som skaver i organisationen, finns det oklarheter som behöver redas ut och hur kan era relationer utvecklas?</Text>
-                        <Text style={styles.inlineText}><Text style={[styles.textSpan, {backgroundColor: '#586230'}]}> Grönt (60–72) </Text> : Du arbetar på arbetsplats om som passar dig mycket väl och har gruppen ett högt index tycker det på att du, och ni, arbetar i en välfungerande organisation.</Text>
-                        <Text>Du kan känna dig trygg med att göra testet för dina svar behandlas helt konfidentiellt!</Text>
+                        <Text style={{marginVertical: 15}}>{t('owi_info_text_7')}</Text>
+                        <Text style={styles.inlineText}><Text style={[styles.textSpan, {backgroundColor: '#b23722'}]}> {t('hwi_red_text')} (12-24) </Text> : {t('owi_info_red_text')}</Text>
+                        <Text style={styles.inlineText}><Text style={[styles.textSpan, {backgroundColor: '#e9b90f'}]}> {t('hwi_yellow_text')} (25-59) </Text> : {t('owi_info_yellow_text')}</Text>
+                        <Text style={styles.inlineText}><Text style={[styles.textSpan, {backgroundColor: '#586230'}]}> {t('hwi_green_text')} (60–72) </Text> : {t('owi_info_green_text')}</Text>
+                        <Text>{t('hwi_info_text_4')}</Text>
                         </>
                     )}
 

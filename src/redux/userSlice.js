@@ -28,6 +28,23 @@ export const fetchUserData = createAsyncThunk('userdata/fetchUserData', async ( 
 	return allUserData;
 });
 
+export const fetchHwiQuestions = createAsyncThunk('userdata/fetchHwiQuestions', async ( qfield ) => {
+	
+	const response = await fetch(
+			`${API_BASE_URL}/sustainchange/v1/getanyindexquestions/?field=${qfield}`,
+			{
+				method: "GET",
+				headers: {
+					Authorization: `Basic ${SUSTAIN_CHANGE_API_KEY}`,
+				}
+			}
+	);
+
+	const hwiQuestions = await response.json();
+
+	return hwiQuestions;
+});
+
 export const saveUserHwi = createAsyncThunk('userdata/saveUserHwi', async ( hwiData ) => {
 
 	const response = await fetch(
@@ -70,7 +87,7 @@ export const saveUserOvi = createAsyncThunk('userdata/saveUserOvi', async ( hwiD
 export const getHwiMsgs = createAsyncThunk('userdata/getHwiMsgs', async ( hwiData ) => {
 
 	const response = await fetch(
-		`${API_BASE_URL}/sustainchange/v1/gethvimsgs/?lang=sv&type=${hwiData.type}&count=${hwiData.count}`,
+		`${API_BASE_URL}/sustainchange/v1/gethvimsgs/?lang=${hwiData.lng}&type=${hwiData.type}&count=${hwiData.count}`,
 		{
 			method: "GET",
 			headers: {
@@ -92,6 +109,9 @@ export const userDataSlice = createSlice({
 		builder
 			.addCase(fetchUserData.fulfilled, (state, action) => {
 				return action.payload
+			})
+			.addCase(fetchHwiQuestions.fulfilled, (state, action) => {
+				state.data[action.payload.field] = action.payload.questions
 			})
 			.addCase(saveUserHwi.fulfilled, (state, action) => {
 				state.data.hvi_data.personal = action.payload.data.all_hvi

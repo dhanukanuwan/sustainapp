@@ -6,6 +6,7 @@ import { useDispatch } from 'react-redux';
 import {saveUserHwi, saveUserOvi } from '../redux/userSlice';
 import * as Keychain from 'react-native-keychain';
 import HwiResults from './HwiResults';
+import { useTranslation } from 'react-i18next';
 
 const HwiTest = ({questions, type, showResults}) => {
 
@@ -21,6 +22,7 @@ const HwiTest = ({questions, type, showResults}) => {
 	const dispatch = useDispatch();
 	const [isSaving, setIsSaving] = useState(false);
 	const [showResult, setShowResult] = useState(false);
+	const { t } = useTranslation();
 
 	useEffect( () => {
         
@@ -86,14 +88,14 @@ const HwiTest = ({questions, type, showResults}) => {
 					<View key={i} style={styles.sliderWrap}>
 						<View style={styles.slideQuestion}>
 							<Text style={{fontWeight: '600'}}>{`${i+1}) `}</Text>
-							<Text style={{fontWeight: '600'}}>{question.title}</Text>
+							<Text style={{fontWeight: '600'}}>{question.question}</Text>
 						</View>
 						
 						{ question.hints &&
 							<View style={styles.hintsWrap}>
 								{ question.hints.map( (  hint, j ) => {
 									return (
-										<Text key={j} style={styles.hintText}>{hint}</Text>
+										<Text key={j} style={styles.hintText}>{hint.hint}</Text>
 									)
 								}) }
 							</View>
@@ -128,7 +130,7 @@ const HwiTest = ({questions, type, showResults}) => {
 					{ isSaving === true ? (
 						<ActivityIndicator size="small" color="#ffffff" />
 					) : (
-						<Text style={{color: '#ffffff'}}>Spara</Text>
+						<Text style={{color: '#ffffff'}}>{t('app_save')}</Text>
 					)}
 					
 				</Pressable>
