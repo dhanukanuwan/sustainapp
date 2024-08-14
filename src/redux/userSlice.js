@@ -3,6 +3,7 @@ import {API_BASE_URL, SUSTAIN_CHANGE_API_KEY} from "@env"
 
 const initialState = {
 	data: {},
+	resetpass: {},
 	message: '',
 	success: false
 };
@@ -101,6 +102,30 @@ export const getHwiMsgs = createAsyncThunk('userdata/getHwiMsgs', async ( hwiDat
 	return hwiMessages;
 });
 
+export const handlePassReset = createAsyncThunk('userdata/handlePassReset', async ( passData ) => {
+
+	let userRequestData = new FormData();
+            userRequestData.append( 'user_email', passData.user_email );
+			userRequestData.append( 'step', passData.step );
+			userRequestData.append( 'authcode', passData.authcode );
+			userRequestData.append( 'pass', passData.pass );
+
+	const response = await fetch(
+		`${API_BASE_URL}/sustainchange/v1/apppasswordreset/`,
+		{
+			method: "POST",
+			headers: {
+				Authorization: `Basic ${SUSTAIN_CHANGE_API_KEY}`,
+			},
+			body: userRequestData
+		}
+	);
+
+	const userOwiData = await response.json();
+
+	return userOwiData;
+});
+
 export const userDataSlice = createSlice({
 	name: 'userdata',
 	initialState,
@@ -121,6 +146,9 @@ export const userDataSlice = createSlice({
 			})
 			.addCase(saveUserOvi.fulfilled, (state, action) => {
 				state.data.ovi_data.personal = action.payload.data.all_ovi
+			})
+			.addCase(handlePassReset.fulfilled, (state, action) => {
+				state.resetpass = action.payload
 			})
 	}
 });

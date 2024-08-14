@@ -31,6 +31,12 @@ const globalStyles = StyleSheet.create({
         textAlign: 'center',
         paddingVertical: 10,
         alignItems: 'center',
+    },
+    linkPrimary: {
+        color: '#cc9f00',
+        textDecorationLine: "underline",
+        textDecorationStyle: "solid",
+        textDecorationColor: "#cc9f00"
     }
 });
 

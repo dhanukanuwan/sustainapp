@@ -6,6 +6,8 @@ import * as Keychain from 'react-native-keychain';
 import {AxiosContext} from '../context/AxiosContext';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import { useTranslation } from 'react-i18next';
+import { useSelector, useDispatch } from 'react-redux';
+import {handlePassReset } from '../redux/userSlice';
 //import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const image = {uri: 'https://sustainchange.se/app-images/login-bg.jpg'};
@@ -18,6 +20,10 @@ const LoginScreen = () => {
 	const authContext = useContext(AuthContext);
   	const {authAxios} = useContext(AxiosContext);
 	const [isLoading, setIsLoading] = useState( false );
+	const [isResetPass, setIsResetPass] = useState( false );
+
+	const resetPassData = useSelector((state) => state.userdata.resetpass );
+    const dispatch = useDispatch();
 
 	  const { t } = useTranslation();
 
@@ -61,6 +67,46 @@ const LoginScreen = () => {
 		
 	}
 
+	const passwordReset = async () => {
+
+		setIsLoading( true );
+
+		const passData = {
+			user_email: userEmail,
+			step: 'request',
+			authcode: '',
+			pass: userPassword
+		};
+
+		try {
+			await dispatch(handlePassReset(passData))
+	
+		} catch (error) {
+		  console.log(`User data error: ${error.message}`);
+		}
+
+		setIsLoading( false );
+
+	}
+
+	const getResetStep = () => {
+
+		let step = 'email';
+
+		if ( !resetPassData || !resetPassData.step ) {
+			return step;
+		}
+
+		if ( resetPassData.step === 'auth' ||  resetPassData.step === 'pass' ) {
+			step = resetPassData.step;
+		} else if ( resetPassData.step === 'complete' && resetPassData.message === 'reset_complete' ) {
+			step = 'email';
+		}
+
+		return step;
+
+	}
+
 	return(
 		<SafeAreaView style={backgroundStyle}>
 			<StatusBar
@@ -74,15 +120,49 @@ const LoginScreen = () => {
 							<View style={styles.loginform}>
 								<Text style={styles.sectionTitle}>{t('app_login_welcome')}</Text>
 								<Image source={logo} style={styles.loginLogo} />
-								<TextInput style={globalStyles.inputStyles} placeholder={t('app_enter_email')} inputMode="email" value={userEmail} onChangeText={setUserEmail} autoCapitalize="none" placeholderTextColor="#333"  />
-								<TextInput style={globalStyles.inputStyles} placeholder={t('app_enter_pswd')} secureTextEntry={true} value={userPassword} onChangeText={setUserPassword} autoCapitalize="none" placeholderTextColor="#333"   />
-								<Pressable style={globalStyles.btnPrimary} onPress={ handleLoginSubmit }>
-									{ isLoading === true ? (
-										<ActivityIndicator size="small" color="#ffffff" />
-									) : (
-										<Text style={{color: '#ffffff'}}>{t('community_login')}</Text>
-									)}
-								</Pressable>
+
+								{ ! isResetPass &&
+									<>
+										<TextInput style={globalStyles.inputStyles} placeholder={t('app_enter_email')} inputMode="email" value={userEmail} onChangeText={setUserEmail} autoCapitalize="none" placeholderTextColor="#333"  />
+										<TextInput style={globalStyles.inputStyles} placeholder={t('app_enter_pswd')} secureTextEntry={true} value={userPassword} onChangeText={setUserPassword} autoCapitalize="none" placeholderTextColor="#333"   />
+										<View style={styles.resetLink}>
+											<Pressable onPress={ () => setIsResetPass( true ) }>
+												<Text style={[globalStyles.linkPrimary, {fontStyle: 'italic'}]}>{t('app_forgot_pass')}</Text>
+											</Pressable>
+										</View>
+										<Pressable style={globalStyles.btnPrimary} onPress={ handleLoginSubmit }>
+											{ isLoading === true ? (
+												<ActivityIndicator size="small" color="#ffffff" />
+											) : (
+												<Text style={{color: '#ffffff'}}>{t('community_login')}</Text>
+											)}
+										</Pressable>
+									</>
+								}
+
+								{ isResetPass &&
+									<>
+										{ getResetStep() === 'email' &&
+											<>
+												<TextInput style={globalStyles.inputStyles} placeholder={t('app_enter_email')} inputMode="email" value={userEmail} onChangeText={setUserEmail} autoCapitalize="none" placeholderTextColor="#333"  />
+												<Pressable style={[globalStyles.btnPrimary, {paddingHorizontal: 15}]} onPress={ passwordReset }>
+													{ isLoading === true ? (
+														<ActivityIndicator size="small" color="#ffffff" />
+													) : (
+														<Text style={{color: '#ffffff'}}>{t('app_reset_pass')}</Text>
+													)}
+												</Pressable>
+											</>
+										}
+
+										<View style={[styles.resetLink, {marginTop: 10}]}>
+											<Pressable onPress={ () => setIsResetPass( false ) }>
+												<Text style={[globalStyles.linkPrimary, {fontStyle: 'italic'}]}>{t('community_login')}</Text>
+											</Pressable>
+										</View>
+									</>
+								}
+								
 							</View>
 						</ImageBackground>
 					</View>
@@ -124,6 +204,13 @@ const styles = StyleSheet.create({
 	  height: 40,
 	  marginBottom: 15
 	},
+	resetLink: {
+		marginBottom: 10,
+		justifyContent: 'flex-end',
+		width: '100%',
+		flexDirection: 'row',
+    	flexWrap: 'wrap',
+	}
 });
 
 export default LoginScreen;
