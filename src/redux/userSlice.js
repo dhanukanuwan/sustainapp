@@ -109,6 +109,7 @@ export const handlePassReset = createAsyncThunk('userdata/handlePassReset', asyn
 			userRequestData.append( 'step', passData.step );
 			userRequestData.append( 'authcode', passData.authcode );
 			userRequestData.append( 'pass', passData.pass );
+			userRequestData.append( 'lang', passData.lang );
 
 	const response = await fetch(
 		`${API_BASE_URL}/sustainchange/v1/apppasswordreset/`,

@@ -25,7 +25,7 @@ const LoginScreen = () => {
 	const resetPassData = useSelector((state) => state.userdata.resetpass );
     const dispatch = useDispatch();
 
-	  const { t } = useTranslation();
+	  const { t, i18n } = useTranslation();
 
 	  const isDarkMode = useColorScheme() === 'dark';
 
@@ -75,7 +75,8 @@ const LoginScreen = () => {
 			user_email: userEmail,
 			step: 'request',
 			authcode: '',
-			pass: userPassword
+			pass: userPassword,
+			lang: i18n.language
 		};
 
 		try {
@@ -106,6 +107,8 @@ const LoginScreen = () => {
 		return step;
 
 	}
+
+	//console.log( resetPassData );
 
 	return(
 		<SafeAreaView style={backgroundStyle}>
