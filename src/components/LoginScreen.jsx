@@ -21,6 +21,9 @@ const LoginScreen = () => {
   	const {authAxios} = useContext(AxiosContext);
 	const [isLoading, setIsLoading] = useState( false );
 	const [isResetPass, setIsResetPass] = useState( false );
+	const [verificationCode, setVerificationCode] = useState('');
+	const [userConfirmPass, setUserConfirmPass] = useState('');
+	const [passwordError, setPaawordEroor] = useState('');
 
 	const resetPassData = useSelector((state) => state.userdata.resetpass );
     const dispatch = useDispatch();
@@ -70,6 +73,7 @@ const LoginScreen = () => {
 	const passwordReset = async () => {
 
 		setIsLoading( true );
+		setPaawordEroor('');
 
 		const passData = {
 			user_email: userEmail,
@@ -90,17 +94,41 @@ const LoginScreen = () => {
 
 	}
 
+	const handleCodeVerification = async () => {
+
+		setIsLoading( true );
+		setPaawordEroor('');
+
+		const passData = {
+			user_email: resetPassData.data.user_email,
+			step: 'auth',
+			authcode: encodeURIComponent(verificationCode),
+			pass: '',
+			lang: i18n.language
+		};
+
+		try {
+			await dispatch(handlePassReset(passData))
+	
+		} catch (error) {
+		  console.log(`User data error: ${error.message}`);
+		}
+
+		setIsLoading( false );
+
+	}
+
 	const getResetStep = () => {
 
 		let step = 'email';
 
-		if ( !resetPassData || !resetPassData.step ) {
+		if ( !resetPassData || !resetPassData.data ) {
 			return step;
 		}
 
-		if ( resetPassData.step === 'auth' ||  resetPassData.step === 'pass' ) {
-			step = resetPassData.step;
-		} else if ( resetPassData.step === 'complete' && resetPassData.message === 'reset_complete' ) {
+		if ( resetPassData.data.step === 'auth' ||  resetPassData.data.step === 'pass' ) {
+			step = resetPassData.data.step;
+		} else if ( resetPassData.data.step === 'complete' && resetPassData.message === 'reset_complete' ) {
 			step = 'email';
 		}
 
@@ -108,7 +136,64 @@ const LoginScreen = () => {
 
 	}
 
-	//console.log( resetPassData );
+	const validatePassword = ( psw, confirmPass ) => {
+
+		let msg = 'password_ok';
+
+		switch (true) {
+			case  (psw !== confirmPass ):
+			  msg = 'password_match'
+			  break
+			case  (psw.length < 8 ):
+			  msg = 'password_strength'
+			  break
+			case  (!(/[0-9]/.test(psw))):
+			  msg = 'password_upper_lower'
+			  break
+			case (psw == psw.toLowerCase()) || (psw == psw.toUpperCase()):
+			  msg = 'password_upper_lower'
+			  break
+		}
+
+		return msg;
+	}
+
+	const handlePasswordSave = async () => {
+
+		const validateStatus = validatePassword( userPassword, userConfirmPass );
+
+		if ( validateStatus !== 'password_ok' ) {
+			setPaawordEroor( validateStatus );
+			return;
+		}
+
+		setIsLoading( true );
+		setPaawordEroor('');
+
+		const passData = {
+			user_email: resetPassData.data.user_email,
+			step: 'pass',
+			authcode: '',
+			pass: userPassword,
+			lang: i18n.language
+		};
+
+		try {
+			await dispatch(handlePassReset(passData))
+	
+		} catch (error) {
+		  console.log(`User data error: ${error.message}`);
+		}
+
+		setIsLoading( false );
+		setUserPassword('');
+		setUserEmail('');
+		setUserConfirmPass('');
+		setVerificationCode('');
+
+
+
+	}
 
 	return(
 		<SafeAreaView style={backgroundStyle}>
@@ -124,7 +209,29 @@ const LoginScreen = () => {
 								<Text style={styles.sectionTitle}>{t('app_login_welcome')}</Text>
 								<Image source={logo} style={styles.loginLogo} />
 
-								{ ! isResetPass &&
+								{ isResetPass && resetPassData && resetPassData.success === false &&
+									<>
+										{ resetPassData.message && 
+											<View style={styles.errorMsg}>
+												<Text style={[styles.codeNotice, {color: '#38120a'}]}>{t(`app_${resetPassData.message}`)}</Text>
+											</View>
+										}
+
+										{ !resetPassData.message && 
+											<View style={styles.errorMsg}>
+												<Text style={[styles.codeNotice, {color: '#38120a'}]}>{t('app_error_msg')}</Text>
+											</View>
+										}
+									</>
+								}
+
+								{ resetPassData && resetPassData.success && resetPassData.message === 'reset_complete' &&
+									<View style={[styles.errorMsg, {backgroundColor: '#edf7ed'}]}>
+										<Text style={[styles.codeNotice, {color: '#45665e'}]}>{t(`app_${resetPassData.message}`)}</Text>
+									</View>
+								}
+
+								{ (! isResetPass || ( resetPassData && resetPassData.success && resetPassData.message === 'reset_complete' ) ) &&
 									<>
 										<TextInput style={globalStyles.inputStyles} placeholder={t('app_enter_email')} inputMode="email" value={userEmail} onChangeText={setUserEmail} autoCapitalize="none" placeholderTextColor="#333"  />
 										<TextInput style={globalStyles.inputStyles} placeholder={t('app_enter_pswd')} secureTextEntry={true} value={userPassword} onChangeText={setUserPassword} autoCapitalize="none" placeholderTextColor="#333"   />
@@ -143,7 +250,7 @@ const LoginScreen = () => {
 									</>
 								}
 
-								{ isResetPass &&
+								{ (isResetPass && ( (resetPassData && resetPassData.message !== 'reset_complete') || !resetPassData )) &&
 									<>
 										{ getResetStep() === 'email' &&
 											<>
@@ -153,6 +260,40 @@ const LoginScreen = () => {
 														<ActivityIndicator size="small" color="#ffffff" />
 													) : (
 														<Text style={{color: '#ffffff'}}>{t('app_reset_pass')}</Text>
+													)}
+												</Pressable>
+											</>
+										}
+
+										{ getResetStep() === 'auth' &&
+											<>
+												<Text style={styles.codeNotice}>{t('app_resetpass_notice')}</Text>
+												<TextInput style={globalStyles.inputStyles} placeholder={t('app_verif_code')} value={verificationCode} onChangeText={setVerificationCode} autoCapitalize="none" placeholderTextColor="#333"  />
+												<Pressable style={[globalStyles.btnPrimary, {paddingHorizontal: 15}]} onPress={ handleCodeVerification }>
+													{ isLoading === true ? (
+														<ActivityIndicator size="small" color="#ffffff" />
+													) : (
+														<Text style={{color: '#ffffff'}}>{t('app_verif_code_btn')}</Text>
+													)}
+												</Pressable>
+											</>
+										}
+
+										{ getResetStep() === 'pass' &&
+											<>
+												{ passwordError &&
+													<View style={styles.errorMsg}>
+														<Text style={[styles.codeNotice, {color: '#38120a'}]}>{t(`app_${passwordError}`)}</Text>
+													</View>
+												}
+												
+												<TextInput style={globalStyles.inputStyles} placeholder={t('app_enter_new_pswd')} secureTextEntry={true} value={userPassword} onChangeText={setUserPassword} autoCapitalize="none" placeholderTextColor="#333"   />
+												<TextInput style={globalStyles.inputStyles} placeholder={t('app_confirm_pswd')} secureTextEntry={true} value={userConfirmPass} onChangeText={setUserConfirmPass} autoCapitalize="none" placeholderTextColor="#333"   />
+												<Pressable style={[globalStyles.btnPrimary, {paddingHorizontal: 15}]} onPress={ handlePasswordSave }>
+													{ isLoading === true ? (
+														<ActivityIndicator size="small" color="#ffffff" />
+													) : (
+														<Text style={{color: '#ffffff'}}>{t('app_save')}</Text>
 													)}
 												</Pressable>
 											</>
@@ -213,6 +354,18 @@ const styles = StyleSheet.create({
 		width: '100%',
 		flexDirection: 'row',
     	flexWrap: 'wrap',
+	},
+	codeNotice: {
+		fontStyle: 'italic',
+		marginBottom: 5
+	},
+	errorMsg: {
+		paddingHorizontal: 10,
+		paddingVertical: 10,
+		backgroundColor: '#e8d5d1',
+		color: '#38120a',
+		width: '100%',
+		marginBottom: 10,
 	}
 });
 
